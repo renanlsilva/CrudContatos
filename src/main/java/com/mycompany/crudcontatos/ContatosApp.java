@@ -111,7 +111,7 @@ public class ContatosApp {
       Logger.getLogger(ContatosApp.class.getName()).log(Level.SEVERE, null, ex);
       dataNasc = new Date();
     }
-    System.out.print("Digite o telefone no formato 99 99999-9999: ");
+    System.out.print("Digite o telefone no formato 99999-9999: ");
     telefone = entrada.nextLine();
 
     System.out.print("Digite o e-mail: ");
@@ -222,6 +222,54 @@ public class ContatosApp {
       }
     }
   }
+ public void deletarPessoa(){
+    PreparedStatement stmt = null;
+    Connection conn = null;
+    int Id;  
+    String nome;
+    Date dataNasc;
+    String email;
+    String telefone;
+    String sql;
+
+    
+    listarPessoas();
+    
+    Scanner entrada = new Scanner(System.in);
+    System.out.print("Digite o ID da pessoa que deseja deletar: ");
+    Id = entrada.nextInt();
+       
+
+   
+
+    sql = ("DELETE FROM TB_PESSOA WHERE ID_PESSOA="+Id+"");
+    try {
+      conn = obterConexao();
+      stmt = conn.prepareStatement(sql);
+      stmt.executeUpdate();
+      System.out.println("Registro deletado com sucesso.");
+
+    } catch (SQLException ex) {
+      Logger.getLogger(ContatosApp.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(ContatosApp.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException ex) {
+          Logger.getLogger(ContatosApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
+      if (conn != null) {
+        try {
+          conn.close();
+        } catch (SQLException ex) {
+          Logger.getLogger(ContatosApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
+    }
+  }
 
   public static void main(String[] args) {
     ContatosApp instancia = new ContatosApp();
@@ -231,6 +279,7 @@ public class ContatosApp {
       System.out.println("(1) Listar agenda");
       System.out.println("(2) Incluir registro");
       System.out.println("(3) Alterar registro");
+      System.out.println("(4) Deletar registro");
       System.out.println("(9) SAIR");
       System.out.print("Opção: ");
       int opcao = entrada.nextInt();
@@ -242,7 +291,11 @@ public class ContatosApp {
    
       }else if (opcao == 3) {
         instancia.alterarPessoa();
-      } else if (opcao == 9) {
+      }
+      else if (opcao == 4){
+          instancia.deletarPessoa();
+      }
+      else if (opcao == 9) {
         System.exit(0);
       } else {
         System.out.println("OPÇÃO INVÁLIDA.");
